@@ -1,81 +1,88 @@
-import React, { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
-import axios from 'axios'; // Importar axios
+import React, { useState, useEffect } from 'react';
+import { Form, Button } from 'react-bootstrap';
 
-const FormularioLugar = ({ props }) => {
+const FormularioLugar = ({ onAgregarLugar, lugar, isEditing, actualizarLugar }) => {
   const [nombre, setNombre] = useState('');
-  const [fecha, setFecha] = useState('');
-  const [imagen, setImagen] = useState('');
   const [direccion, setDireccion] = useState('');
+  const [imagen, setImagen] = useState('');
+  const [fecha, setFecha] = useState(''); // Estado para la fecha
 
-  const envioFormulario = async (e) => {
+  // Cargar datos del lugar si está editando
+  useEffect(() => {
+    if (isEditing && lugar) {
+      setNombre(lugar.nombre);
+      setDireccion(lugar.direccion);
+      setImagen(lugar.imagen);
+      setFecha(lugar.fechavisita); // Cargar la fecha si está editando
+    } else {
+      // Resetear campos si no está editando
+      setNombre('');
+      setDireccion('');
+      setImagen('');
+      setFecha(''); // Resetear la fecha si no está editando
+    }
+  }, [lugar, isEditing]);
+
+  const manejarSubmit = (e) => {
     e.preventDefault();
+
     const nuevoLugar = {
-      nombre,
       fechavisita: fecha,
+      nombre,
       imagen,
-      direccion,
+      direccion
     };
 
-    try {
-      // Realizar la solicitud POST a MockAPI
-      const response = await axios.post('https://66fd61c7699369308954fd8e.mockapi.io/lugares/visita', nuevoLugar);
-      // Pasar el nuevo lugar al componente padre
-      props(response.data); // Utiliza response.data para obtener el nuevo lugar con el ID generado
-    } catch (error) {
-      console.error('Error al agregar el lugar:', error);
+    if (isEditing) {
+      actualizarLugar({ ...lugar, ...nuevoLugar }); // Actualiza el lugar existente
+    } else {
+      onAgregarLugar(nuevoLugar); // Agrega un nuevo lugar
     }
-
-    // Limpiar el formulario
-    setNombre('');
-    setFecha('');
-    setImagen('');
-    setDireccion('');
   };
 
   return (
-    <Form onSubmit={envioFormulario}>
+    <Form onSubmit={manejarSubmit}>
       <Form.Group controlId="formNombre">
         <Form.Label>Nombre</Form.Label>
         <Form.Control
           type="text"
-          placeholder="Ingresa el nombre"
+          placeholder="Ingrese el nombre del lugar"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
+          required
         />
       </Form.Group>
-
+      <Form.Group controlId="formDireccion">
+        <Form.Label>Dirección</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Ingrese la dirección"
+          value={direccion}
+          onChange={(e) => setDireccion(e.target.value)}
+          required
+        />
+      </Form.Group>
+      <Form.Group controlId="formImagen">
+        <Form.Label>URL de la Imagen</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Ingrese la URL de la imagen"
+          value={imagen}
+          onChange={(e) => setImagen(e.target.value)}
+          required
+        />
+      </Form.Group>
       <Form.Group controlId="formFecha">
         <Form.Label>Fecha de Visita</Form.Label>
         <Form.Control
           type="date"
           value={fecha}
           onChange={(e) => setFecha(e.target.value)}
+          required
         />
       </Form.Group>
-
-      <Form.Group controlId="formImagen">
-        <Form.Label>URL de la Imagen</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Ingresa la URL de la imagen"
-          value={imagen}
-          onChange={(e) => setImagen(e.target.value)}
-        />
-      </Form.Group>
-
-      <Form.Group controlId="formDireccion">
-        <Form.Label>Dirección</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Ingresa la dirección"
-          value={direccion}
-          onChange={(e) => setDireccion(e.target.value)}
-        />
-      </Form.Group>
-
-      <Button variant="primary" type="submit" className="mt-3">
-        Agregar Lugar
+      <Button variant="dark" type="submit">
+        {isEditing ? 'Guardar Cambios' : 'Agregar Lugar'}
       </Button>
     </Form>
   );

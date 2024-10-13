@@ -28,7 +28,7 @@ const Home = () => {
             <span>o</span>
           </div>
           <p className="lead">Bienvenido a tu galeria interactiva</p>
-          <Button className='boton' size="lg" onClick={handleButtonClick}>Comenzar</Button>
+          <Button variant='dark' size="lg" onClick={handleButtonClick}>Comenzar</Button>
         </Col>
       </Row>
     </Container>

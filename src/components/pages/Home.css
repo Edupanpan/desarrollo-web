@@ -56,6 +56,3 @@ body {
 .greetings > span:nth-child(10){
     animation-delay: 1.8s;
 }
-.boton{
-    background-color: #59271C;
-}

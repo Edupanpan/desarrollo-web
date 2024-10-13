@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, DropdownButton, Dropdown, Button, Modal } from 'react-bootstrap';
+import { Container, Row, Col, DropdownButton, Dropdown, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Album.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TarjetaLugar from '../tarjetalugar';
-import FormularioLugar from '../formulariolugar';
+import ModalLugar from '../modal'; // Importar el nuevo componente ModalLugar
 
 const Album = () => {
   const navigate = useNavigate();
 
   const [lugares, setLugares] = useState([]);
+  const [lugarSeleccionado, setLugarSeleccionado] = useState(null); // Estado para el lugar seleccionado
+  const [isEditing, setIsEditing] = useState(false); // Estado para el modo de edición
 
   // Función para obtener los datos de MockAPI
   const obtenerDatos = async () => {
@@ -21,29 +23,63 @@ const Album = () => {
       console.error('Error al obtener los datos:', error);
     }
   };
+
   useEffect(() => {
     obtenerDatos();
   }, []);
 
   const [mostrarModal, setMostrarModal] = useState(false); // Estado para controlar el modal
-  function handleModal() {//funcion para controlar el modal, cuando se ejecuta cambia el estado de mostrarModal a uno dsitinto al actual
+  function handleModal() {
     setMostrarModal(!mostrarModal);
   }
 
-  const agregarLugar = (nuevoLugar) => {
-    setLugares((prevLugares) => [...prevLugares, nuevoLugar]);
-    setMostrarModal(!mostrarModal); // cierra el modal cambiando a un estado distinto de al actual
+  const agregarLugar = async (nuevoLugar) => {
+    try {
+      // Realiza la petición POST a la API
+      const respuesta = await axios.post('https://66fd61c7699369308954fd8e.mockapi.io/lugares/visita', nuevoLugar);
+      setLugares((prevLugares) => [...prevLugares, respuesta.data]); // Agrega el nuevo lugar a la lista
+      setMostrarModal(false); // Cierra el modal
+    } catch (error) {
+      console.error('Error al agregar el lugar:', error);
+    }
+  };
+
+  const actualizarLugar = async (lugarActualizado) => {
+    try {
+      // Realiza la petición PUT a la API
+      const respuesta = await axios.put(`https://66fd61c7699369308954fd8e.mockapi.io/lugares/visita/${lugarActualizado.id}`, lugarActualizado);
+      
+      if (respuesta.status === 200) {
+        // Actualiza el estado local con los datos actualizados
+        setLugares((prevLugares) =>
+          prevLugares.map((lugar) =>
+            lugar.id === lugarActualizado.id ? respuesta.data : lugar
+          )
+        );
+        setMostrarModal(false); // Cierra el modal
+      } else {
+        console.error('Error al actualizar el lugar en MockAPI');
+      }
+    } catch (error) {
+      console.error('Error al conectar con MockAPI:', error);
+    }
+  };
+
+  const editarLugar = (lugar) => {
+    setLugarSeleccionado(lugar);
+    setIsEditing(true);
+    setMostrarModal(true);
   };
 
   return (
     <Container className="d-flex flex-column vh-100 align-items-center">
-      <Row className="m-4 w-100">
+      <Row className="m-4 w-100 d-flex align-items-center justify-content-center">
         <Col xs={2} className="text-start">
-          <DropdownButton id="bg-nested-dropdown" title="Opciones">
+          <DropdownButton variant='dark' id="bg-nested-dropdown" title="Opciones">
             <Dropdown.Item eventKey="1" onClick={() => navigate('/')}>
               Home
             </Dropdown.Item>
-            <Dropdown.Item eventKey="2" onClick={handleModal}>
+            <Dropdown.Item eventKey="2" onClick={() => { setIsEditing(false); setLugarSeleccionado(null); handleModal(); }}>
               Nuevo
             </Dropdown.Item>
           </DropdownButton>
@@ -55,28 +91,19 @@ const Album = () => {
           <p>Eduardo Silva</p>
         </Col>
       </Row>
-
-      {/* Mostrar lugares automáticamente */}
       <Row className="d-flex justify-content-center w-100">
         <Col>
-          <TarjetaLugar lugares={lugares} />
+          <TarjetaLugar lugares={lugares} editarLugar={editarLugar} />
         </Col>
       </Row>
-
-      {/* Modal para agregar nuevo lugar */}
-      <Modal show={mostrarModal} onHide={handleModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Agregar nuevo lugar</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <FormularioLugar onAgregarLugar={agregarLugar} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleModal}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <ModalLugar
+        mostrarModal={mostrarModal}
+        handleModal={handleModal}
+        agregarLugar={agregarLugar}
+        lugar={lugarSeleccionado}
+        isEditing={isEditing}
+        actualizarLugar={actualizarLugar}
+      />
     </Container>
   );
 };
