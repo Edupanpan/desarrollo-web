@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import axios from 'axios'; // Importar axios
 
-const FormularioLugar = ({ onAgregarLugar }) => {
+const FormularioLugar = ({ props }) => {
   const [nombre, setNombre] = useState('');
   const [fecha, setFecha] = useState('');
   const [imagen, setImagen] = useState('');
   const [direccion, setDireccion] = useState('');
 
-  const manejarEnvio = async (e) => {
+  const envioFormulario = async (e) => {
     e.preventDefault();
     const nuevoLugar = {
       nombre,
@@ -21,7 +21,7 @@ const FormularioLugar = ({ onAgregarLugar }) => {
       // Realizar la solicitud POST a MockAPI
       const response = await axios.post('https://66fd61c7699369308954fd8e.mockapi.io/lugares/visita', nuevoLugar);
       // Pasar el nuevo lugar al componente padre
-      onAgregarLugar(response.data); // Utiliza response.data para obtener el nuevo lugar con el ID generado
+      props(response.data); // Utiliza response.data para obtener el nuevo lugar con el ID generado
     } catch (error) {
       console.error('Error al agregar el lugar:', error);
     }
@@ -34,7 +34,7 @@ const FormularioLugar = ({ onAgregarLugar }) => {
   };
 
   return (
-    <Form onSubmit={manejarEnvio}>
+    <Form onSubmit={envioFormulario}>
       <Form.Group controlId="formNombre">
         <Form.Label>Nombre</Form.Label>
         <Form.Control
