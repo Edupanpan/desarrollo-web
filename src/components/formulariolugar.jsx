@@ -65,7 +65,7 @@ const FormularioLugar = ({ onAgregarLugar, lugar, isEditing, actualizarLugar }) 
       <Form.Group controlId="formImagen">
         <Form.Label>URL de la Imagen</Form.Label>
         <Form.Control
-          type="text"
+          type="url"
           placeholder="Ingrese la URL de la imagen"
           value={imagen}
           onChange={(e) => setImagen(e.target.value)}

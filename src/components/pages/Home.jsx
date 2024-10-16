@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 const Home = () => {
   const navigate = useNavigate()
 
-  const handleButtonClick = () => {
+  const toAlbum = () => {
     navigate('/album')
   }
 
@@ -28,7 +28,7 @@ const Home = () => {
             <span>o</span>
           </div>
           <p className="lead">Bienvenido a tu galeria interactiva</p>
-          <Button variant='dark' size="lg" onClick={handleButtonClick}>Comenzar</Button>
+          <Button variant='dark' size="lg" onClick={toAlbum}>Comenzar</Button>
         </Col>
       </Row>
     </Container>
