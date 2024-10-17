@@ -3,12 +3,12 @@ import { Container, Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 import './tarjetalugar.css';
 
 const TarjetaLugar = ({ lugares, editarLugar, eliminarLugar }) => {
-  // Al montar el componente, cargamos los lugares desde las props
+  
   const [listaLugares, setListaLugares] = useState(lugares);
 
   useEffect(() => {
     setListaLugares(lugares);
-    console.log('Lugares recibidos:', lugares); // Log para depuración
+    console.log('Lugares recibidos:', lugares); 
   }, [lugares]);
 
   return (

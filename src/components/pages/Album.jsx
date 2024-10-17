@@ -5,7 +5,7 @@ import axios from 'axios';
 import './Album.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TarjetaLugar from '../tarjetalugar';
-import ModalLugar from '../modal'; // Importar el nuevo componente ModalLugar
+import ModalLugar from '../modal'; 
 
 const Album = () => {
   const navigate = useNavigate();//hook para navegar entre rutas

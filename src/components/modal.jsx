@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import FormularioLugar from './formulariolugar'; // Ruta corregida
+import FormularioLugar from './formulariolugar'; 
 
 const ModalLugar = ({ mostrarModal, handleModal, agregarLugar, lugar, isEditing, actualizarLugar }) => {
   return (
