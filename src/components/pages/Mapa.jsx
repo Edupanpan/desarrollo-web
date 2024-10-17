@@ -65,7 +65,7 @@ function MyComponent() {
         }
     };
 
-    useEffect(() => {
+    useEffect(() => {   
         if (isLoaded) {
             obtenerDatos(); // Ejecutamos la búsqueda al cargar el mapa
         }

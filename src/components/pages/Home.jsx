@@ -1,8 +1,8 @@
-import React from 'react'
-import { Container, Row, Col, Button } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom'
-import './Home.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import React from 'react';
+import { Container, Row, Col, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import './Home.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Home = () => {
   const navigate = useNavigate()
