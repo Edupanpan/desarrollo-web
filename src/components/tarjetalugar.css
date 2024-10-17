@@ -5,3 +5,12 @@
     justify-content: center;
     align-items: center;
 }
+.tamaño {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+.container-margen-reducido {
+    margin: 10px auto; /* Ajusta el valor según tus necesidades */
+    padding: 0 10px; /* Opcional: Ajusta el padding si es necesario */
+}
