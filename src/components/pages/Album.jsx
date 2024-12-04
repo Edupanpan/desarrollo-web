@@ -5,59 +5,78 @@ import axios from 'axios';
 import './Album.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TarjetaLugar from '../tarjetalugar';
-import ModalLugar from '../modal'; 
+import ModalLugar from '../modal';
+
+const axiosinstance = axios.create({
+  baseURL: 'http://localhost:8000/api/',
+});
 
 const Album = () => {
-  const navigate = useNavigate();//hook para navegar entre rutas
+  const navigate = useNavigate(); // hook para navegar entre rutas
 
-  const [lugares, setLugares] = useState([]);//definicion de un estado y una funcion para actualizarlo
-  
-  // Función para obtener los datos de MockAPI
+  const [lugares, setLugares] = useState([]); // definición de un estado y una función para actualizarlo
+
+  // Función para obtener los datos de la API
   const obtenerDatos = async () => {
-    const response = await axios.get('https://66fd61c7699369308954fd8e.mockapi.io/lugares/visita');
-    setLugares(response.data);
+    try {
+      const response = await axiosinstance.get('places');
+      console.log('Respuesta de la API:', response); // Verifica la estructura de la respuesta
+      // Ajusta esto según la estructura de la respuesta de tu API
+      setLugares(response.data.data || response.data); // Si la respuesta tiene `data` que contiene los lugares
+    } catch (error) {
+      console.error('Error al obtener los datos:', error);
+    }
   };
 
   useEffect(() => {
     obtenerDatos();
   }, []);
-  
+
+  // Función para agregar un lugar
   const agregarLugar = async (nuevoLugar) => {
-    // Realiza la petición POST a la API
-    const respuesta = await axios.post('https://66fd61c7699369308954fd8e.mockapi.io/lugares/visita', nuevoLugar);
-    setLugares((prevLugares) => [...prevLugares, respuesta.data]); // Agrega el nuevo lugar a la lista
-    setMostrarModal(false); // Cierra el modal
-  };
-  
-  const [lugarSeleccionado, setLugarSeleccionado] = useState(null); // Estado para el lugar seleccionado
-  const [isEditing, setIsEditing] = useState(false); // Estado para el modo de edición
-  
-  const actualizarLugar = async (lugarActualizado) => {
-    // Realiza la petición PUT a la API
-    const respuesta = await axios.put(`https://66fd61c7699369308954fd8e.mockapi.io/lugares/visita/${lugarActualizado.id}`, lugarActualizado);
-    
-    if (respuesta.status === 200) {
-      // Actualiza el estado local con los datos actualizados
-      setLugares((prevLugares) =>
-        prevLugares.map((lugar) =>
-          lugar.id === lugarActualizado.id ? respuesta.data : lugar
-        )
-      );
-      setMostrarModal(false); // Cierra el modal
-    } else {
-      console.error('Error al actualizar el lugar en MockAPI');
+    console.log('Datos enviados a la API:', nuevoLugar); // Verifica los datos que envías
+    try {
+      const respuesta = await axiosinstance.post('places', nuevoLugar);
+      console.log('Respuesta de la API:', respuesta.data); // Verifica la respuesta de la API
+      setLugares((prevLugares) => Array.isArray(prevLugares) ? [...prevLugares, respuesta.data] : [respuesta.data]);
+      setMostrarModal(false);
+    } catch (error) {
+      console.error('Error al agregar el lugar:', error);
+      console.log('Detalles del error:', error.response.data); // Verifica los detalles del error
     }
   };
 
-  const eliminarLugar = async (id) => {
-    await axios.delete(`https://66fd61c7699369308954fd8e.mockapi.io/lugares/visita/${id}`);
-    setLugares((prevLugares) => prevLugares.filter((lugar) => lugar.id !== id));
+  // Función para actualizar un lugar
+  const actualizarLugar = async (lugarActualizado) => {
+    try {
+      const respuesta = await axiosinstance.put(`places/${lugarActualizado.id}`, lugarActualizado);
+      setLugares((prevLugares) => Array.isArray(prevLugares) ? prevLugares.map((lugar) => lugar.id === lugarActualizado.id ? respuesta.data : lugar) : []);
+      setMostrarModal(false);
+    } catch (error) {
+      console.error('Error al actualizar el lugar:', error);
+    }
   };
 
-  const [mostrarModal, setMostrarModal] = useState(false); // Estado para controlar el modal
+  // Función para eliminar un lugar
+  const eliminarLugar = async (id) => {
+    try {
+      await axiosinstance.delete(`places/${id}`);
+      setLugares((prevLugares) => prevLugares.filter((lugar) => lugar.id !== id));
+    } catch (error) {
+      console.error('Error al eliminar el lugar:', error);
+    }
+  };
+
+  // Estado para el modal
+  const [mostrarModal, setMostrarModal] = useState(false);
   function handleModal() {
     setMostrarModal(!mostrarModal);
   }
+
+  // Estado para el lugar seleccionado y modo de edición
+  const [lugarSeleccionado, setLugarSeleccionado] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+
   const editarLugar = (lugar) => {
     setLugarSeleccionado(lugar);
     setIsEditing(true);
@@ -68,14 +87,21 @@ const Album = () => {
     <Container className="d-flex flex-column vh-100 align-items-center">
       <Row className="m-4 w-100 d-flex align-items-center justify-content-center">
         <Col xs={2} className="text-start">
-          <DropdownButton variant='dark' id="bg-nested-dropdown" title="Opciones">
+          <DropdownButton variant="dark" id="bg-nested-dropdown" title="Opciones">
             <Dropdown.Item eventKey="1" onClick={() => navigate('/')}>
               Home
             </Dropdown.Item>
-            <Dropdown.Item eventKey="2" onClick={() => { setIsEditing(false); setLugarSeleccionado(null); handleModal(); }}>
+            <Dropdown.Item
+              eventKey="2"
+              onClick={() => {
+                setIsEditing(false);
+                setLugarSeleccionado(null);
+                handleModal();
+              }}
+            >
               Nuevo
             </Dropdown.Item>
-            <Dropdown.Item eventKey="2" onClick={()=>navigate('/Mapa')}>
+            <Dropdown.Item eventKey="2" onClick={() => navigate('/Mapa')}>
               Ver Mapa
             </Dropdown.Item>
           </DropdownButton>

@@ -4,7 +4,7 @@ import { Form, Button } from 'react-bootstrap';
 const FormularioLugar = ({ onAgregarLugar, lugar, isEditing, actualizarLugar }) => {
   const [nombre, setNombre] = useState('');
   const [direccion, setDireccion] = useState('');
-  const [imagen, setImagen] = useState('');
+  const [url_imagen, setUrlImagen] = useState(''); // Cambiado a url_imagen
   const [fecha, setFecha] = useState(''); // Estado para la fecha
 
   // Cargar datos del lugar si está editando
@@ -12,13 +12,13 @@ const FormularioLugar = ({ onAgregarLugar, lugar, isEditing, actualizarLugar }) 
     if (isEditing && lugar) {
       setNombre(lugar.nombre);
       setDireccion(lugar.direccion);
-      setImagen(lugar.imagen);
-      setFecha(lugar.fechavisita); // Cargar la fecha si está editando
+      setUrlImagen(lugar.url_imagen); // Cambiado a url_imagen
+      setFecha(lugar.fecha_visita); // Cargar la fecha si está editando
     } else {
       // Resetear campos si no está editando
       setNombre('');
       setDireccion('');
-      setImagen('');
+      setUrlImagen(''); // Cambiado a url_imagen
       setFecha(''); // Resetear la fecha si no está editando
     }
   }, [lugar, isEditing]);
@@ -27,10 +27,10 @@ const FormularioLugar = ({ onAgregarLugar, lugar, isEditing, actualizarLugar }) 
     e.preventDefault();
 
     const nuevoLugar = {
-      fechavisita: fecha,
       nombre,
-      imagen,
-      direccion
+      direccion,
+      url_imagen, // Cambiado a url_imagen
+      fecha_visita: fecha
     };
 
     if (isEditing) {
@@ -67,8 +67,8 @@ const FormularioLugar = ({ onAgregarLugar, lugar, isEditing, actualizarLugar }) 
         <Form.Control
           type="url"
           placeholder="Ingrese la URL de la imagen"
-          value={imagen}
-          onChange={(e) => setImagen(e.target.value)}
+          value={url_imagen} // Cambiado a url_imagen
+          onChange={(e) => setUrlImagen(e.target.value)} // Cambiado a setUrlImagen
           required
         />
       </Form.Group>

@@ -2,17 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, DropdownButton, Dropdown } from 'react-bootstrap';
 import './tarjetalugar.css';
 
-const TarjetaLugar = ({ lugares, editarLugar, eliminarLugar }) => {
+const TarjetaLugar = ({ lugares = [], editarLugar, eliminarLugar }) => {
   
-  const [listaLugares, setListaLugares] = useState(lugares);
+  const [listaLugares, setListaLugares] = useState([]);
 
   useEffect(() => {
-    setListaLugares(lugares);
+    if (Array.isArray(lugares)) {
+      setListaLugares(lugares);
+    }
     console.log('Lugares recibidos:', lugares); 
   }, [lugares]);
 
   return (
-    <Container >
+    <Container>
       <Row>
         {listaLugares.map((lugar) => (
           <Col key={lugar.id} xs={12} md={6} lg={4} className="mb-4">
@@ -20,6 +22,7 @@ const TarjetaLugar = ({ lugares, editarLugar, eliminarLugar }) => {
               <Row className="d-flex justify-content-between align-items-center">
                 <Col xs={1}>
                   <DropdownButton
+                    title="Opciones"
                     variant="link"
                     id={`dropdown-${lugar.id}`}
                     className="p-0"
@@ -43,7 +46,7 @@ const TarjetaLugar = ({ lugares, editarLugar, eliminarLugar }) => {
               <Row className="text-center mt-3">
                 <Col>
                   <img
-                    src={lugar.imagen}
+                    src={lugar.url_imagen}
                     alt={lugar.nombre}
                     className="img-fluid tamaño"
                   />
@@ -52,7 +55,7 @@ const TarjetaLugar = ({ lugares, editarLugar, eliminarLugar }) => {
 
               <Row className="text-center mt-2">
                 <Col>
-                  <p>{lugar.fechavisita}</p>
+                  <p>{lugar.fecha_visita}</p>
                   <p>{lugar.direccion}</p>
                 </Col>
               </Row>
