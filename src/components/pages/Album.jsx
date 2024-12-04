@@ -8,7 +8,7 @@ import TarjetaLugar from '../tarjetalugar';
 import ModalLugar from '../modal';
 
 const axiosinstance = axios.create({
-  baseURL: 'http://localhost:8000/api/',
+  baseURL: 'https://payable-doralynne-edupanpan-49177d96.koyeb.app/api/',
 });
 
 const Album = () => {
