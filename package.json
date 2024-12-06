@@ -1,7 +1,7 @@
 {
   "name": "desarrollo-web",
-  "private": true,
-  "homepage": "https://edupanpan.github.io/desarrollo-web/",
+  
+  "homepage": "https://Edupanpan.github.io/desarrollo-web/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -9,6 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
